@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import csv
+
 dic_palavra_polaridade = {}
+dic_retro = ""
 
 # abre o lexico
 sentilexpt = open("SentiLex-PT01/SentiLex-lem-PT01.txt",'r')
@@ -12,10 +15,6 @@ for i in sentilexpt.readlines():
     pol_pos = i.find('POL')
     polaridade = (i[pol_pos+4:pol_pos+6]).replace(';','')
     dic_palavra_polaridade[palavra] = polaridade
-
-# print (dic_palavra_polaridade)
-
-# print (dic_palavra_polaridade.get('abusivo'))
 
 def Score_sentimento(frase):
     frase = frase.lower()
@@ -29,14 +28,24 @@ def Score_sentimento(frase):
         return 'Neutro, Score: {}'.format(score)
     else:
         return 'Negativo, Score: {}'.format(score)
-
+        
 # Todo:
-# - abrir o arquivo CSV
-# - ler os dados corretos
-# - aplicar o score de sentimento
 # - armazenar o score de sentimento
 # - montar uma visão gráfica do score de sentimento classificado
 
-print Score_sentimento("Eu estou muito feliz hoje, porém, triste com a politica")
-print Score_sentimento("Estou Muito Feliz hoje,super animado com o trabalho novo! :)")
-print Score_sentimento("Estou muito triste, desanimado com algumas coisas…")
+with open('retro-analise.csv', 'rb') as csvfile:
+    spamreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+    for row in spamreader:
+        dic_retro = ', '.join(row)
+    
+# print (dic_palavra_polaridade)
+
+# print (dic_palavra_polaridade.get('abusivo'))
+
+#print Score_sentimento("Eu estou muito feliz hoje, porém, triste com a politica")
+#print Score_sentimento("Estou Muito Feliz hoje,super animado com o trabalho novo! :)")
+#print Score_sentimento("Estou muito triste, desanimado com algumas coisas…")
+
+print Score_sentimento(dic_retro)
+
+1

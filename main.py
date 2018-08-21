@@ -47,5 +47,3 @@ with open('retro-analise.csv', 'rb') as csvfile:
 #print Score_sentimento("Estou muito triste, desanimado com algumas coisas…")
 
 print Score_sentimento(dic_retro)
-
-1

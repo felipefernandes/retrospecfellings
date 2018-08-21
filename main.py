@@ -32,6 +32,8 @@ def Score_sentimento(frase):
 # Todo:
 # - armazenar o score de sentimento
 # - montar uma visão gráfica do score de sentimento classificado
+# - Fazer separação por projeto (um por coluna) da análise
+
 
 with open('retro-analise.csv', 'rb') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=' ', quotechar='|')

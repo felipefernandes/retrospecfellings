@@ -1,51 +1,62 @@
 # -*- coding: utf-8 -*-
-
+# encoding=utf8  
+import sys 
 import csv
+from textblob import TextBlob
 
-dic_palavra_polaridade = {}
-dic_retro = ""
+reload(sys)  
+sys.setdefaultencoding('utf8')
 
-# abre o lexico
-sentilexpt = open("SentiLex-PT01/SentiLex-lem-PT01.txt",'r')
-
-# processa e cria o dicionario de sentimentos
-for i in sentilexpt.readlines():
-    pos_ponto = i.find('.')
-    palavra = (i[:pos_ponto])
-    pol_pos = i.find('POL')
-    polaridade = (i[pol_pos+4:pol_pos+6]).replace(';','')
-    dic_palavra_polaridade[palavra] = polaridade
-
-def Score_sentimento(frase):
-    frase = frase.lower()
-    l_sentimento = []
-    for p in frase.split():
-        l_sentimento.append(int(dic_palavra_polaridade.get(p, 0)))
-    score = sum(l_sentimento)
-    if score > 0:
-        return 'Positivo, Score: {}'.format(score)
-    elif score == 0:
-        return 'Neutro, Score: {}'.format(score)
-    else:
-        return 'Negativo, Score: {}'.format(score)
-        
 # Todo:
-# - armazenar o score de sentimento
 # - montar uma visão gráfica do score de sentimento classificado
 # - Fazer separação por projeto (um por coluna) da análise
 
+dic_retro = ""
 
-with open('retro-analise.csv', 'rb') as csvfile:
-    spamreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
-    for row in spamreader:
-        dic_retro = ', '.join(row)
-    
-# print (dic_palavra_polaridade)
+# openCSV
+# abre o arquivo CSV e retorna uma variável com o arquivo
+# 
+def openCSV(csv_file):
+    dic_retrospectiva = ' '
+    with open(csv_file, 'rb') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=',')
+        for row in spamreader:
+            dic_retrospectiva += ' ' + ' '.join(row) 
 
-# print (dic_palavra_polaridade.get('abusivo'))
+    return dic_retrospectiva
 
-#print Score_sentimento("Eu estou muito feliz hoje, porém, triste com a politica")
-#print Score_sentimento("Estou Muito Feliz hoje,super animado com o trabalho novo! :)")
-#print Score_sentimento("Estou muito triste, desanimado com algumas coisas…")
+# translateTerms
+# traduz termos de uma string para inglês
+# 
+def translateTerms(dic):
+    dictonary = TextBlob(dic)
+    if dictonary.detect_language() != 'en':
+        traducao = dictonary.translate(to='en')
+    else:
+        traducao = dictonary
+    return traducao        
 
-print Score_sentimento(dic_retro)
+# sentimentAnalysis
+# usa o arquivo CSV como base e o converte em uma variavel
+# depois usa um analisador de sentimento
+# 
+def sentimentAnalysis(csv_file_retro):   
+    terms = translateTerms(openCSV(csv_file_retro))
+    theSentiment = terms.sentiment    
+    Polarity = int(round(terms.sentiment.polarity*100))
+
+    if Polarity < 0:
+        polarityResult = 'Negativo'
+    elif Polarity == 0:
+        polarityResult = 'Neutro'
+    else:
+        polarityResult = 'Positivo'
+
+    print '-----------------------'
+    print 'Arquivo analisado: {0}'.format(csv_file_retro)
+    print 'Subjetividade: {0}%'.format(int(round(terms.sentiment.subjectivity*100)))
+    print 'Polaridade: {0}% {1}'.format(int(round(terms.sentiment.polarity*100)), polarityResult)
+    print '-----------------------'
+
+# executa a analise
+sentimentAnalysis('retro-analise.csv')

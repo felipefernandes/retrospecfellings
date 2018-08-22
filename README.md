@@ -6,5 +6,5 @@ Projeto foi criado com a intenção de analisar termos resultantes em uma retros
  - Python 2.7
 
 ## Para rodar:
- Atualize o arquivo **retro-analise.csv**
- Execute no terminal o script `# python main.py`
+ - Atualize o arquivo **retro-analise.csv**
+ - Execute no terminal o script `# python main.py`

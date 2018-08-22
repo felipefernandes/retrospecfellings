@@ -3,9 +3,11 @@
 import sys 
 import csv
 from textblob import TextBlob
+from datetime import datetime
 
 reload(sys)  
 sys.setdefaultencoding('utf8')
+now = datetime.now()
 
 # Todo:
 # - montar uma visão gráfica do score de sentimento classificado
@@ -53,6 +55,7 @@ def sentimentAnalysis(csv_file_retro):
         polarityResult = 'Positivo'
 
     print '-----------------------'
+    print '{0}/{1}/{2}'.format(now.day, now.month, now.year)
     print 'Arquivo analisado: {0}'.format(csv_file_retro)
     print 'Subjetividade: {0}%'.format(int(round(terms.sentiment.subjectivity*100)))
     print 'Polaridade: {0}% {1}'.format(int(round(terms.sentiment.polarity*100)), polarityResult)
